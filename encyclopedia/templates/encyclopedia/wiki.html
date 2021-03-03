@@ -1,9 +1,9 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Encyclopedia: {{ article }}
+    Encyclopedia: {{ title }}
 {% endblock %}
 
 {% block body %}
-    
+  <span> {{ text |safe }} </span>
 {% endblock %}
