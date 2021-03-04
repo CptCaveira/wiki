@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+
 import markdown
 
 from . import util
@@ -10,7 +11,6 @@ def index(request):
     })
 
 def wiki(request, article):
-    
     md = markdown.Markdown()
     text = util.get_entry(article)
     split = text.split()
@@ -21,3 +21,21 @@ def wiki(request, article):
     }) 
     
 
+def search(request):
+    if request.method == "POST":
+        entries = util.list_entries()
+        query = request.POST
+        if query["q"].lower() in (entry.lower() for entry in entries):
+            md = markdown.Markdown()
+            text = util.get_entry(query["q"])
+            split = text.split()
+            title = split[1]  
+            return redirect( "wiki", title)
+        elif query["q"].lower() not in (entry.lower() for entry in entries):
+            matches = []
+            for entry in entries:
+                if query["q"].lower() in entry.lower():
+                    matches.append(entry)
+            return render(request, "encyclopedia/search.html",{
+                "matches" : matches
+            })
