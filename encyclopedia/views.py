@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 
-import markdown
+import markdown, random
 
 from . import util
 
@@ -39,3 +39,9 @@ def search(request):
             return render(request, "encyclopedia/search.html",{
                 "matches" : matches
             })
+
+def randompage(request):
+    entries = util.list_entries()
+    randomnum = random.randrange(len(entries))
+    title = entries[randomnum]
+    return redirect( "wiki", title)
