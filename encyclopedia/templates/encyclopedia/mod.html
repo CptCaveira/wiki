@@ -20,10 +20,13 @@
 {% else%}
     <form method="post" action="{% url 'mod' title %}">{% csrf_token %}
     <h1><label for="content">Create a new entry</label></h1>
+    <div class="title">
+        <input name="title" id="title" type="text" style="margin-bottom : 4px" placeholder="Article title">
+    </div>
     <div class="textarea">
-        <input name="title" id="title" type="text">
-        <textarea class="title" name="content" id="content" style="resize: none; height:600px"></textarea>
+        <textarea class="title" name="content" id="content" style="resize: none; height:565px" placeholder="Article content"></textarea>
     </div>
     <input type="submit" value="Save">
+    </form>
 {% endif %}
 {% endblock %}

@@ -11,10 +11,14 @@ def index(request):
     })
 
 def wiki(request, article):
+    # error message for wrong url TO DO
     md = markdown.Markdown()
     text = util.get_entry(article)
-    split = text.split()
-    title = split[1]  
+    f = open("entries/" + article + ".md", "r")
+    title = f.readline()
+    f.close()
+    title = title.strip("#")
+    title = title.replace(" ","") 
     return render(request, "encyclopedia/wiki.html", {
         "text": md.convert(text),
         "title" : title
@@ -47,25 +51,42 @@ def randompage(request):
     return redirect( "wiki", title)
 
 def mod(request, title):
-    if request.method == "POST":
-        content = request.POST.get("content")
-        f = open("entries/"+ title + ".md", "w")
-        f.write(content)
-        f.close()
-        print(request)
-        return redirect( "wiki", title)
+    if title == "new":
+        new = True
     else:
-        check = False
-        if title == "new":
-            check= True
-            return render(request, "encyclopedia/mod.html",{
-                "title" : title
-            })
+        new = False
+    if request.method == "POST":
+        if new == False:
+            content = request.POST.get("content")
+            f = open("entries/" + title + ".md", "w")
+            f.write(content)
+            f.close()
+            return redirect( "wiki", title)
         else:
+            article = request.POST.get("title")
+            articlename = article.replace(" ","")
             entries = util.list_entries()
+            if article in entries:
+                pass
+            content = request.POST.get("content")
+            f = open("entries/" + articlename + ".md", "w")
+            f.write("# " + article + "\n" + content)
+            f.close()
+            print(article)
+            return redirect( "wiki", articlename)
+    else:
+        if new == False:
+            entries = util.list_entries()
+            title = title.rstrip("\n")
             if title in entries:
                 article = util.get_entry(title)
                 return render(request, "encyclopedia/mod.html",{
                     "title" : title,
                     "article" : article
                 })
+        else:
+            print(new)
+            return render(request, "encyclopedia/mod.html",{
+                "new" : new,
+                "title" : "new"
+            })

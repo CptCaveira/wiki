@@ -6,7 +6,7 @@
 
 {% block body %}
     {% if matches %}
-    <h1>Did you mean</h1>
+    <h1>Did you mean:</h1>
     <ul>
     {% for match in matches %}
             <a href="{% url "wiki" match %}" ><li>{{ match }}</li></a>
