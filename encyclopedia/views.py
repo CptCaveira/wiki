@@ -45,3 +45,27 @@ def randompage(request):
     randomnum = random.randrange(len(entries))
     title = entries[randomnum]
     return redirect( "wiki", title)
+
+def mod(request, title):
+    if request.method == "POST":
+        content = request.POST.get("content")
+        f = open("entries/"+ title + ".md", "w")
+        f.write(content)
+        f.close()
+        print(request)
+        return redirect( "wiki", title)
+    else:
+        check = False
+        if title == "new":
+            check= True
+            return render(request, "encyclopedia/mod.html",{
+                "title" : title
+            })
+        else:
+            entries = util.list_entries()
+            if title in entries:
+                article = util.get_entry(title)
+                return render(request, "encyclopedia/mod.html",{
+                    "title" : title,
+                    "article" : article
+                })

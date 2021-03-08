@@ -1,0 +1,29 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+{% if not new%}
+    Encyclopedia: {{ title }}
+{% else%}
+    Encyclopedia: Create a new entry
+{% endif %}
+{% endblock %}
+
+{% block body %}
+{% if not new%}
+<form method="post" action="{% url 'mod' title %}">{% csrf_token %}
+    <h1><label for="content">Editing article: {{title}}</label></h1>
+    <div class="textarea">
+        <textarea class="title" name="content" id="content" style="resize: none; height:600px">{{article}}</textarea>
+    </div>
+    <input type="submit" value="Save">
+</form>
+{% else%}
+    <form method="post" action="{% url 'mod' title %}">{% csrf_token %}
+    <h1><label for="content">Create a new entry</label></h1>
+    <div class="textarea">
+        <input name="title" id="title" type="text">
+        <textarea class="title" name="content" id="content" style="resize: none; height:600px"></textarea>
+    </div>
+    <input type="submit" value="Save">
+{% endif %}
+{% endblock %}

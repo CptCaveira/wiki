@@ -6,4 +6,5 @@
 
 {% block body %}
   <span> {{ text |safe }} </span>
+  <a href="{% url "mod" title %}">Edit article.</a>
 {% endblock %}
