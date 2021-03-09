@@ -13,6 +13,8 @@ def index(request):
         title = f.readline()
         f.close()
         title = title.strip("#")
+        title = title.replace(" ", "")
+        title = title.rstrip("\n")
         entries.append(title)
     return render(request, "encyclopedia/index.html", {
         "entries": entries
@@ -30,7 +32,8 @@ def wiki(request, article):
         title = f.readline()
         f.close()
         title = title.strip("#")
-        title = title.replace(" ","") 
+        title = title.replace(" ", "")
+        title = title.rstrip("\n")
         return render(request, "encyclopedia/wiki.html", {
             "text": md.convert(text),
             "title" : title
@@ -55,6 +58,8 @@ def search(request):
                     title = f.readline()
                     f.close()
                     title = title.strip("#")
+                    title = title.replace(" ", "")
+                    title = title.rstrip("\n")
                     matches.append(title)
             return render(request, "encyclopedia/search.html",{
                 "matches" : matches
