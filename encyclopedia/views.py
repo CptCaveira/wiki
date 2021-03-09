@@ -6,8 +6,16 @@ from . import util
 
 
 def index(request):
+    entries = []
+    listentries = util.list_entries()
+    for entry in listentries:
+        f = open("entries/" + entry + ".md", "r")
+        title = f.readline()
+        f.close()
+        title = title.strip("#")
+        entries.append(title)
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "entries": entries
     })
 
 def wiki(request, article):
@@ -43,7 +51,11 @@ def search(request):
             matches = []
             for entry in entries:
                 if query["q"].lower() in entry.lower():
-                    matches.append(entry)
+                    f = open("entries/" + entry + ".md", "r")
+                    title = f.readline()
+                    f.close()
+                    title = title.strip("#")
+                    matches.append(title)
             return render(request, "encyclopedia/search.html",{
                 "matches" : matches
             })
