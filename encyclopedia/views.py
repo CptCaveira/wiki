@@ -14,15 +14,19 @@ def wiki(request, article):
     # error message for wrong url TO DO
     md = markdown.Markdown()
     text = util.get_entry(article)
-    f = open("entries/" + article + ".md", "r")
-    title = f.readline()
-    f.close()
-    title = title.strip("#")
-    title = title.replace(" ","") 
-    return render(request, "encyclopedia/wiki.html", {
-        "text": md.convert(text),
-        "title" : title
-    }) 
+    if not text:
+        error = 404
+        return redirect("error", error)
+    else:
+        f = open("entries/" + article + ".md", "r")
+        title = f.readline()
+        f.close()
+        title = title.strip("#")
+        title = title.replace(" ","") 
+        return render(request, "encyclopedia/wiki.html", {
+            "text": md.convert(text),
+            "title" : title
+        }) 
     
 
 def search(request):
@@ -66,14 +70,15 @@ def mod(request, title):
             article = request.POST.get("title")
             articlename = article.replace(" ","")
             entries = util.list_entries()
-            if article in entries:
-                pass
+            if articlename in entries:
+                error = 403
+                return redirect("error", error) 
             content = request.POST.get("content")
             f = open("entries/" + articlename + ".md", "w")
             f.write("# " + article + "\n" + content)
             f.close()
             print(article)
-            return redirect( "wiki", articlename)
+            return redirect("wiki", articlename)
     else:
         if new == False:
             entries = util.list_entries()
@@ -90,3 +95,14 @@ def mod(request, title):
                 "new" : new,
                 "title" : "new"
             })
+
+def error(request, error):
+    if error == 403:
+        message = "An article with that name already exists."
+    elif error == 404:
+        message = "The page you are looking for does not exist."
+                
+    return render(request, "encyclopedia/error.html",{
+                "error" : error,
+                "message" : message
+    })
